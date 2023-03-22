@@ -7,6 +7,7 @@ import com.example.loginsystem.repositories.UserRepo;
 import com.example.loginsystem.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +21,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = this.modelMapper.map(userDto, User.class);
+        user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
         User savedUser = this.userRepo.save(user);
         return this.modelMapper.map(savedUser, UserDto.class);
     }
@@ -33,7 +37,7 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+userId));
         user.setName(userDto.getName());
         user.setAge(userDto.getAge());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
         user.setAbout(userDto.getAbout());
 
         User updatedUser = this.userRepo.save(user);
