@@ -1,6 +1,7 @@
 package com.example.loginsystem.services.impl;
 
 import com.example.loginsystem.entities.User;
+import com.example.loginsystem.exceptions.ResourceNotFoundException;
 import com.example.loginsystem.payloads.UserDto;
 import com.example.loginsystem.repositories.UserRepo;
 import com.example.loginsystem.services.UserService;
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, Integer userId) {
-        User user = this.userRepo.findById(userId).get();
+        User user = this.userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+userId));
         user.setName(userDto.getName());
         user.setAge(userDto.getAge());
         user.setPassword(userDto.getPassword());
@@ -41,19 +42,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Integer userId) {
-        User user = this.userRepo.findById(userId).get();
+        User user = this.userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+userId));
         this.userRepo.delete(user);
     }
 
     @Override
     public UserDto getUserById(Integer userId) {
-        User user = this.userRepo.findById(userId).get();
+        User user = this.userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+userId));
         return this.modelMapper.map(user, UserDto.class);
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
-        User user = this.userRepo.findByEmail(email).get();
+        User user = this.userRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with email : "+email));
         return this.modelMapper.map(user,UserDto.class);
     }
 
