@@ -26,8 +26,8 @@ public class LoginsystemApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		try{
 
-			System.out.println(passwordEncoder.encode("abhay"));
-
+			String encode = passwordEncoder.encode("Ajay");
+			System.out.println(encode);
 			Role user = new Role();
 			user.setId(AppConstant.ROLE_USER_ID);
 			user.setName(AppConstant.ROLE_USER);
@@ -38,8 +38,7 @@ public class LoginsystemApplication implements CommandLineRunner {
 			List<Role> roleList = List.of(user, admin);
 			List<Role> roles = this.roleRepo.saveAll(roleList);
 			System.out.println(roles);
-		}catch (Exception e)
-		{
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 
